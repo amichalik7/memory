@@ -1,0 +1,51 @@
+import PySimpleGUI as sg
+
+
+def zamien(wiersz):
+    lista = list(wiersz)
+    i = 1
+    while i < len(lista):
+
+        if lista[i] == "\n" or lista[i] == " ":
+            i = i + 2
+        elif lista[i].isalpha() == False or lista[i-1] == "\n" or lista[i-1] == " ":
+                i = i + 1
+        else:
+            lista[i] = "_"
+            i = i + 1
+    wynik = ""
+    for i in range(0, len(lista)):
+        wynik = wynik + lista[i]
+    return wynik
+
+
+from fpdf import FPDF
+
+def zapiszpdf(x):
+    pdf = FPDF()
+    pdf.add_page()
+    pdf.set_font("Arial", size=11)
+    pdf.write(5, x)
+    pdf.output("zamieniony.pdf")
+    return 0
+
+layout = [
+    [sg.Text("Wprowadź wiersz: ")],
+    [sg.Multiline(key='n', size=(50, 30), do_not_clear=True)],
+    [sg.Button("Zamień"), sg.Button("Zapisz PDF"), sg.Button("Zamknij")],
+    []
+        ]
+zamienione =""
+window = sg.Window("Pierwsza próba", layout, element_justification='c')
+while True:
+    event, values = window.read()
+    if event == sg.WINDOW_CLOSED:
+        break
+    if event == "Zamknij":
+        break
+    if event == "Zamień":
+        temp = values['n']
+        zamienione= zamien(temp)
+        window['n'].Update(zamien(temp))
+    if event == "Zapisz PDF":
+        zapiszpdf(zamienione)
